@@ -16,3 +16,4 @@ test_cmd_sing.txt
 script_analysis
 .nextflow.log
 database/worknewdb
+*.img
