@@ -151,6 +151,7 @@ else{
     // index
     process index_query {
         tag "${fasta.baseName}"
+	label 'cpu_retry'
         
         if(params.modelling_quality == "fast"){
             cpus params.cpu_candidates
@@ -180,6 +181,7 @@ else{
         tag "${fam[0]}"
         publishDir "$myDir/candidates/", mode: 'copy'
         cpus params.cpu_candidates
+	label 'cpu_retry'
 
         input:
         set file(fasta), file(index) from multifastaindexedChannel
@@ -209,6 +211,7 @@ else{
 
     process fastaExtract {
         tag "${fasta}"
+	label 'cpu_retry'
 
         input:
         set fam, file(fasta) from candidatesChannel
@@ -227,8 +230,7 @@ process homology_modelling {
     tag "${fasta.baseName}:${fam}"
     publishDir "$myDir/modelling/${fam}_candidates/", mode: 'copy'
     cpus params.cpu
-//    label 'modelling'
-//    errorStrategy 'finish'
+    label 'homology_mod'
 
     input:
     set fam, file(fasta) from fastaChannel
@@ -272,9 +274,7 @@ process homology_modelling {
 process prosa_check {
      tag "${fasta.baseName}:${fam}"
      publishDir "$myDir/modelling/${fam}_candidates/", mode: 'copyNoFollow', pattern: "*/*/result_prosa_*"
-//     label 'modelling'
-//     errorStrategy 'retry'
-//     maxRetries 10
+     label 'prosa_check'
 
      input:
      set val(fam), file(fasta), horiz_ref, best_pdb_ref, proq_ref, mypmfs_ref, summary_ref, horiz_tneg, best_pdb_tneg, proq_tneg, mypmfs_tneg, summary_tneg from modelChannel
@@ -345,8 +345,7 @@ process structural_alignment {
     tag "${fasta.baseName}:${fam}"
     publishDir "$myDir/modelling/${fam}_candidates/", mode: 'copyNoFollow', pattern: '*/struct_matrix_*.tsv'
     cpus params.cpu
-//    errorStrategy 'retry'
-//    maxRetries 10
+    label 'structural_align'
 
     input:
     set val(fam), file(fasta), best_pdb_ref, best_pdb_tneg from structuralAlignmentChannel
@@ -414,6 +413,7 @@ process build_matrix {
 
 process lineartest {
     cache false
+    label 'cpu_retry'
 
     input:
     file(matrix) from matrixChannel
