@@ -1,0 +1,14 @@
+base
+rmarkdown
+knitr
+corrplot
+ParamHelpers
+mlr
+ggplot2
+pROC
+plyr
+scales
+ggbiplot
+pander
+e1071
+DT
