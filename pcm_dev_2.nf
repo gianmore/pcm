@@ -179,8 +179,8 @@ else{
     process search_distant_homologuous {
         tag "${fam[0]}"
         publishDir "$myDir/candidates/", mode: 'copy'
-//     	errorStrategy 'retry'
-//     	maxRetries 2
+     	errorStrategy 'retry'
+     	maxRetries 2
 //      cpus params.cpu_candidates
 
         input:
@@ -228,7 +228,7 @@ else{
 process homology_modelling {
     tag "${fasta.baseName}:${fam}"
     publishDir "$myDir/modelling/${fam}_candidates/", mode: 'copy'
-//  errorStrategy 'finish'
+    errorStrategy 'finish'
 //  cpus params.cpu
 //  label 'modelling'
 
@@ -274,8 +274,8 @@ process homology_modelling {
 process prosa_check {
      tag "${fasta.baseName}:${fam}"
      publishDir "$myDir/modelling/${fam}_candidates/", mode: 'copyNoFollow', pattern: "*/*/result_prosa_*"
-//   errorStrategy 'retry'
-//   maxRetries 10
+     errorStrategy 'retry'
+     maxRetries 10
 //   label 'modelling'
 
      input:
@@ -302,6 +302,8 @@ process prosa_check {
 
 process extract_result {
      tag "${fasta.baseName}:${fam}"
+     errorStrategy 'retry'
+     maxRetries 2
 
      input:
      set val(fam), file(fasta), best_pdb_ref, proq_ref, mypmfs_ref, prosa_ref, summary_ref, best_pdb_tneg, proq_tneg, mypmfs_tneg, prosa_tneg, summary_tneg from extractChannel
@@ -346,8 +348,8 @@ process extract_result {
 process structural_alignment {
     tag "${fasta.baseName}:${fam}"
     publishDir "$myDir/modelling/${fam}_candidates/", mode: 'copyNoFollow', pattern: '*/struct_matrix_*.tsv'
-//  errorStrategy 'retry'
-//  maxRetries 10
+    errorStrategy 'retry'
+    maxRetries 10
 //  cpus params.cpu
 
     input:
